@@ -1,7 +1,7 @@
 package com.mahzad.springBoot.controller;
 
 import com.mahzad.springBoot.dto.CreateUserRequest;
-import com.mahzad.springBoot.model.User;
+import com.mahzad.springBoot.dto.UserResponse;
 import com.mahzad.springBoot.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,18 +16,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    //@PostMapping
-    //public User create(@RequestBody User user) {
-    //    return userService.save(user);
-    //}
-
     @PostMapping
-    public User create(@RequestBody CreateUserRequest user) {
+    public List<UserResponse> create(@RequestBody CreateUserRequest user) {
         return  userService.createUser(user);
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<UserResponse> getAll() {
         return userService.getAll();
     }
 }
