@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -49,6 +50,27 @@ public class UserService {
 
     public List<UserResponse> getAll() {
         var users =userRepository.findAll();
+        return convertToUserResponse(users);
+    }
+
+    public  List<UserResponse> getAllByJpql() {
+        var users =userRepository.getAllByJpql();
+        return convertToUserResponse(users);
+    }
+
+    public Optional<UserResponse> getUserByIdJpql(Integer id) {
+        var user = userRepository.getUserByIdJpql(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return convertToUserResponse(List.of(user)).stream().findFirst();
+    }
+
+    public List<UserResponse> getUsersByRoleJpql(Integer id) {
+        var user = userRepository.getUsersByRoleJpql(id);
+        return convertToUserResponse(user);
+    }
+
+    public  List<UserResponse> convertToUserResponse(List<User> users)
+    {
         List<UserResponse> userResponseList = new ArrayList<>();
         for( User user : users )
         {
@@ -66,6 +88,5 @@ public class UserService {
 
         }
         return userResponseList;
-
     }
 }
