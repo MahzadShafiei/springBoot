@@ -4,32 +4,29 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.concurrent.Semaphore;
 
 @Service
-public class ThreatService {
-    static Semaphore sem1 = new Semaphore(1);
-    static Semaphore sem2 = new Semaphore(0);
-    static Semaphore sem3 = new Semaphore(0);
+public class ThreadService {
+    static int fileTurnType = 1;
 
-    public ThreatService() {}
+    public ThreadService() {}
 
     public void getResultInThreat()
     {
-        new Thread(()->readFile("file1.txt", sem1, sem2,1)).start();
-        new Thread(()->readFile("file2.txt", sem2, sem3,2)).start();
-        new Thread(()->readFile("file3.txt", sem3, sem1,3)).start();
+        new Thread(()->readFile("file1.txt", 1,2)).start();
+        new Thread(()->readFile("file2.txt", 2,3)).start();
+        new Thread(()->readFile("file3.txt", 3,1)).start();
     }
 
-    public void readFile(String fileName, Semaphore myTurn, Semaphore nextTurn, int fileType)
+    public void readFile(String fileName, int fileType, int nextFileTurnType)
     {
         try(BufferedReader br = new BufferedReader(new FileReader(fileName)))
         {
-            while (true) {
-                myTurn.acquire();
-                String line = br.readLine();
-                if(line == null)
-                    break;
+            String line;
+            while ((line = br.readLine())!=null) {
+
+                while (fileTurnType != fileType)
+                    Thread.yield();
 
                 String lineToPrint = line;
                 if(fileType == 1)
@@ -42,7 +39,7 @@ public class ThreatService {
                 else
                     System.out.print(lineToPrint);
 
-                nextTurn.release();
+                fileTurnType = nextFileTurnType;
             }
         }
         catch (Exception e)
