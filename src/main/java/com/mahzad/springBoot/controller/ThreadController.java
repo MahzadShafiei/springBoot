@@ -19,4 +19,10 @@ public class ThreadController {
     {
         threatService.getResultInThreat();
     }
+
+    @GetMapping("/getSumOfDigits")
+    public void getSumOfDigits()
+    {
+        threatService.getSumOfDigits();
+    }
 }
