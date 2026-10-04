@@ -15,6 +15,7 @@ public class User {
 
     private String name;
     private Integer age;
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRole> userRoles = new ArrayList<>();
@@ -22,9 +23,10 @@ public class User {
     //constructor
     public User() {}
 
-    public User(String name, Integer age) {
+    public User(String name, Integer age,  String password) {
         this.name = name;
         this.age = age;
+        this.password = password;
     }
 
     //getter setter
@@ -45,6 +47,9 @@ public class User {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
 
     public List<UserRole> getUserRoles() {
         return userRoles;

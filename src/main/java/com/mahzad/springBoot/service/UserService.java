@@ -7,6 +7,7 @@ import com.mahzad.springBoot.model.User;
 import com.mahzad.springBoot.model.UserRole;
 import com.mahzad.springBoot.repository.RoleRepository;
 import com.mahzad.springBoot.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,16 +19,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> createUser(CreateUserRequest createUserRequest) {
         User user = new User();
         user.setName(createUserRequest.getName());
         user.setAge(createUserRequest.getAge());
+        String encodedPassword = passwordEncoder.encode(createUserRequest.getPassword());
+        user.setPassword(encodedPassword);
 
         for(Integer roleId : createUserRequest.getRoleIds())
         {

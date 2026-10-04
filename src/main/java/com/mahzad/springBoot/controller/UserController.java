@@ -4,6 +4,8 @@ import com.mahzad.springBoot.dto.CreateUserRequest;
 import com.mahzad.springBoot.dto.UserResponse;
 import com.mahzad.springBoot.model.User;
 import com.mahzad.springBoot.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +43,17 @@ public class UserController {
     @GetMapping("/getUsersByRoleJpql")
     public List<UserResponse> getUsersByRole(int roleId) {
         return  userService.getUsersByRoleJpql(roleId);
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello World";
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @GetMapping("/admin")
+    public String admin() {
+        return "hello admin";
     }
 }
 
