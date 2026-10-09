@@ -1,9 +1,7 @@
-package com.mahzad.springBoot.model;
+package com.mahzad.ipRegistery.model;
 
 import jakarta.persistence.*;
-import javax.xml.crypto.Data;
-import java.sql.Date;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,6 +15,9 @@ public class IP {
     private String ip;
 
     private LocalDateTime accessTime;
+
+    protected IP() {
+    }
 
     public IP(String ip, LocalDateTime accessTime ) {
         this.ip = ip;

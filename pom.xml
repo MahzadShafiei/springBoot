@@ -11,7 +11,7 @@
 	<groupId>com.mahzad</groupId>
 	<artifactId>springBoot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
+    <name/>
 	<description/>
 	<url/>
 	<licenses>
@@ -20,7 +20,12 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
+    <packaging>pom</packaging>
+    <modules>
+        <module>ipRegistery</module>
+        <module>main-app</module>
+    </modules>
+    <scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>

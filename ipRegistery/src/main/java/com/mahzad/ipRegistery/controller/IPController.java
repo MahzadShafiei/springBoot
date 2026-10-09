@@ -1,6 +1,6 @@
-package com.mahzad.springBoot.controller;
+package com.mahzad.ipRegistery.controller;
 
-import com.mahzad.springBoot.service.IPService;
+import com.mahzad.ipRegistery.service.IPService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +16,8 @@ public class IPController {
     }
 
     @GetMapping("/callMe")
-    public void callMe(HttpServletRequest request)
+    public String callMe(HttpServletRequest request)
     {
-        ipService.registerIP(request);
+        return ipService.registerIP(request);
     }
 }
