@@ -4,6 +4,7 @@ import com.mahzad.springBoot.dto.CreateUserRequest;
 import com.mahzad.springBoot.dto.UserResponse;
 import com.mahzad.springBoot.model.User;
 import com.mahzad.springBoot.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,11 @@ public class UserController {
     @GetMapping("/admin")
     public String admin() {
         return "hello admin";
+    }
+
+    @GetMapping("/test-requestId")
+    public String testRequestId(HttpServletRequest request) {
+        return request.getAttribute("requestId").toString();
     }
 }
 

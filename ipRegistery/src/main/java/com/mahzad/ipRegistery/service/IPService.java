@@ -22,7 +22,7 @@ public class IPService {
     @Transactional
     public String registerIP(HttpServletRequest request)
     {
-        var ip = new IP(request.getRemoteAddr(), LocalDateTime.now());
+        var ip = new IP(request.getRemoteAddr(), LocalDateTime.now(), request.getAttribute("requestId").toString());
 
         ipRepository.save(ip);
         return "Done";

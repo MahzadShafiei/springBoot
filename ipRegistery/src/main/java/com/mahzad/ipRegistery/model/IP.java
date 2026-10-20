@@ -16,12 +16,16 @@ public class IP {
 
     private LocalDateTime accessTime;
 
+    private String UUID;
+
+
     protected IP() {
     }
 
-    public IP(String ip, LocalDateTime accessTime ) {
+    public IP(String ip, LocalDateTime accessTime, String UUID ) {
         this.ip = ip;
         this.accessTime = accessTime;
+        this.UUID = UUID;
     }
 
     public String getIp() {
@@ -31,4 +35,6 @@ public class IP {
     public LocalDateTime getAccessTime() {
         return accessTime;
     }
+
+    public String getUUID() { return UUID;   }
 }
