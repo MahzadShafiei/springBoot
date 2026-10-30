@@ -1,6 +1,7 @@
 
 package com.mahzad.springBoot.security;
 
+import com.mahzad.springBoot.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,12 +22,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private  final UserRepository userRepository;
 
     public JwtAuthenticationFilter(
             JwtService jwtService,
-            UserDetailsService userDetailsService) {
+            UserDetailsService userDetailsService,
+            UserRepository userRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,11 +50,56 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
-            if (jwtService.isTokenValid(token)) {
-                String username =
-                        jwtService.extractUsername(token);
+            if (!jwtService.isTokenValid(token)) {
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid token"
+                );
+                return;
+            }
 
-                if (SecurityContextHolder.getContext()
+            String username = jwtService.extractUsername(token);
+            String tokenType = jwtService.extractTokenType(token);
+            long tokenVersion = jwtService.extractTokenVersion(token);
+
+            if (!tokenType.equals("ACCESS") &&
+                    !tokenType.equals("PASSWORD_CHANGE")) {
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Unknown token type"
+                );
+                return;
+            }
+
+            var user = userRepository.getByUsernameByJpql(username)
+                    .orElse(null);
+
+            if (user == null ||
+                    tokenVersion != user.getTokenVersion()) {
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Token is no longer valid"
+                );
+                return;
+            }
+
+            if ("PASSWORD_CHANGE".equals(tokenType)) {
+                boolean allowedEndpoint =
+                        "POST".equalsIgnoreCase(request.getMethod())
+                                && "/auth/change-password".equals(
+                                request.getServletPath()
+                        );
+
+                if (!allowedEndpoint) {
+                    response.sendError(
+                            HttpServletResponse.SC_FORBIDDEN,
+                            "Password change required"
+                    );
+                    return;
+                }
+            }
+
+            if (SecurityContextHolder.getContext()
                         .getAuthentication() == null) {
 
                     UserDetails userDetails =
@@ -71,9 +120,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext()
                             .setAuthentication(authentication);
                 }
-            }
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
+
+            filterChain.doFilter(request, response);
+
+        } catch (io.jsonwebtoken.JwtException |
+                 IllegalArgumentException ex) {
+            SecurityContextHolder.clearContext();
+
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Invalid token"
+            );
         }
 
         filterChain.doFilter(request, response);

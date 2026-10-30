@@ -10,6 +10,7 @@ import com.mahzad.springBoot.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class UserService {
         user.setAge(createUserRequest.getAge());
         String encodedPassword = passwordEncoder.encode(createUserRequest.getPassword());
         user.setPassword(encodedPassword);
+        user.setPasswordChangedAt(LocalDateTime.now());
 
         for(Integer roleId : createUserRequest.getRoleIds())
         {

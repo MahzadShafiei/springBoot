@@ -2,6 +2,7 @@ package com.mahzad.springBoot.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class User {
     private String name;
     private Integer age;
     private String password;
+    private LocalDateTime passwordChangedAt;
+
+    @Column(nullable = false)
+    private long TokenVersion = 0;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRole> userRoles = new ArrayList<>();
@@ -57,4 +62,10 @@ public class User {
     public void setUserRoles(List<UserRole> userRoles) {
         this.userRoles = userRoles;
     }
+
+    public LocalDateTime getPasswordChangedAt() { return  passwordChangedAt;}
+    public void setPasswordChangedAt(LocalDateTime passwordChangedAt) {this.passwordChangedAt = passwordChangedAt;}
+
+    public Long getTokenVersion() { return TokenVersion;}
+    public void setTokenVersion(Long TokenVersion) {this.TokenVersion = TokenVersion;}
 }
